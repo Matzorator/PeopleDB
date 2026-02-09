@@ -725,7 +725,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     daten.forEach((mitarbeiter) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td data-label="Bild"><img src="${mitarbeiter.bild}" alt="${mitarbeiter.vorname} ${mitarbeiter.name}" laoding="lazy"></td>
+        <td data-label="Bild"><img src="${mitarbeiter.bild}" alt="${mitarbeiter.vorname} ${mitarbeiter.name}" loading="lazy"></td>
         <td data-label="Vorname">${mitarbeiter.vorname}</td>
         <td data-label="Name">${mitarbeiter.name}</td>
         <td data-label="E-Mail">${mitarbeiter.email}</td>
