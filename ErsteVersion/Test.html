@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* Deine Variablen integriert */
+      :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #818cf8;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --bg-dark: #0f172a; /* Für den Test-Hintergrund */
+      }
+
+      .brand-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px;
+        text-decoration: none;
+        font-family:
+          "Inter",
+          -apple-system,
+          sans-serif;
+      }
+
+      .brand-logo {
+        position: relative;
+        width: 36px;
+        height: 36px;
+        background: var(--primary);
+        background: linear-gradient(
+          135deg,
+          var(--primary-light),
+          var(--primary-dark)
+        );
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Die Personen-Silhouette */
+      .icon-core {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+
+      .user-head {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .user-body {
+        width: 16px;
+        height: 8px;
+        background: white;
+        border-radius: 8px 8px 2px 2px;
+      }
+
+      /* Dekorative Punkte (Netzwerk-Style) */
+      .icon-dot {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.6;
+      }
+      .dot-1 {
+        top: 6px;
+        right: 6px;
+      }
+      .dot-2 {
+        bottom: 6px;
+        left: 6px;
+      }
+
+      /* Text-Styling */
+      .brand-text {
+        display: flex;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        /* Falls dein Header dunkel ist, hier --white nutzen */
+        color: var(--text-primary);
+      }
+
+      .text-accent {
+        color: var(--primary);
+      }
+
+      /* Mobile First Logik */
+      @media (max-width: 640px) {
+        .brand-text {
+          /* Versteckt den Text auf sehr kleinen Handys, zeigt nur das Icon */
+          display: none;
+        }
+        .brand-wrapper {
+          gap: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="brand-wrapper">
+      <div class="brand-logo">
+        <div class="icon-core">
+          <div class="user-head"></div>
+          <div class="user-body"></div>
+        </div>
+        <div class="icon-dot dot-1"></div>
+        <div class="icon-dot dot-2"></div>
+      </div>
+      <div class="brand-text">
+        <span class="text-main">Mitarbeiter</span
+        ><span class="text-accent">Verwaltung</span>
+      </div>
+    </div>
+  </body>
+</html>

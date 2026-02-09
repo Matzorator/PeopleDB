@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="PeopleDB - Moderne Mitarbeiterverwaltung mit Suchfunktion, Filterung und Sortierung. Einfach Mitarbeiter hinzufügen, bearbeiten und verwalten."
+    />
+    <title>👤 PeopleDB - Mitarbeiterverwaltung Beta 0.5</title>
+
+    <!-- ==========================================
+         CRITICAL CSS & FONTS
+         ========================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <style>
+      /* Kritische Styles für First Paint */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #d8dadf 0%, #2563eb 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+      }
+    </style>
+
+    <!-- Google Font non-blocking laden -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- ==========================================
+           HEADER
+           ========================================== -->
+      <header>
+        <h1>PeopleDB - Beta 0.5</h1>
+      </header>
+
+      <!-- ==========================================
+           MAIN CONTENT
+           ========================================== -->
+      <main>
+        <!-- ==========================================
+             STEUERUNGSLEISTE
+             ========================================== -->
+        <div class="controls">
+          <!-- Suchfeld -->
+          <input
+            type="text"
+            id="suche"
+            placeholder="🔍 Suche nach Name oder Abteilung..."
+            aria-label="Mitarbeiter suchen"
+          />
+
+          <!-- Filter: Abteilung -->
+          <label for="filterAbteilung" class="visually-hidden">
+            Nach Abteilung filtern
+          </label>
+          <select id="filterAbteilung">
+            <option value="">📁 Alle Abteilungen</option>
+          </select>
+
+          <!-- Filter: Position -->
+          <label for="filterPosition" class="visually-hidden">
+            Nach Position filtern
+          </label>
+          <select id="filterPosition">
+            <option value="">📋 Alle Positionen</option>
+          </select>
+
+          <!-- Buttons -->
+          <button id="filterReset" aria-label="Filter zurücksetzen">
+            🔄 Filter zurücksetzen
+          </button>
+          <button id="neuMitarbeiter" aria-label="Neuen Mitarbeiter hinzufügen">
+            ➕ Neuer Mitarbeiter
+          </button>
+        </div>
+        <!-- Data Management Buttons -->
+        <div class="data-management-buttons">
+          <button
+            id="exportBtn"
+            class="secondary-btn"
+            title="Daten als JSON exportieren"
+          >
+            <span>📤</span> Export
+          </button>
+
+          <button
+            id="importBtn"
+            class="secondary-btn"
+            title="JSON-Datei importieren"
+          >
+            <span>📥</span> Import
+          </button>
+
+          <button id="resetBtn" class="danger-btn" title="Daten zurücksetzen">
+            <span>🔄</span> Reset
+          </button>
+
+          <!-- Verstecktes File-Input für Import -->
+          <input
+            type="file"
+            id="importFileInput"
+            accept=".json"
+            style="display: none"
+          />
+        </div>
+        <!-- ==========================================
+             FORMULAR
+             ========================================== -->
+        <form id="mitarbeiterForm" class="form hidden" novalidate>
+          <!-- Vorname -->
+          <div class="form-group">
+            <label for="vorname">
+              Vorname <span class="required" aria-hidden="true">*</span>
+              <span class="tooltip" data-tooltip="Mindestens 2 Zeichen">ⓘ</span>
+            </label>
+            <input
+              type="text"
+              id="vorname"
+              name="vorname"
+              placeholder="Vorname"
+              required
+              minlength="2"
+              maxlength="50"
+              pattern="^[a-zA-ZäöüÄÖÜß\s-]+$"
+              aria-required="true"
+              aria-describedby="vorname-error"
+              data-error-required="Vorname ist erforderlich"
+              data-error-pattern="Nur Buchstaben, Leerzeichen und Bindestriche erlaubt"
+              data-error-minlength="Mindestens 2 Zeichen erforderlich"
+            />
+            <span
+              class="field-error"
+              id="vorname-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Nachname -->
+          <div class="form-group">
+            <label for="name">
+              Nachname <span class="required" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Nachname"
+              required
+              minlength="2"
+              maxlength="50"
+              pattern="^[a-zA-ZäöüÄÖÜß\s-]+$"
+              aria-required="true"
+              aria-describedby="name-error"
+              data-error-required="Nachname ist erforderlich"
+              data-error-pattern="Nur Buchstaben, Leerzeichen und Bindestriche erlaubt"
+              data-error-minlength="Mindestens 2 Zeichen erforderlich"
+            />
+            <span class="field-error" id="name-error" aria-live="polite"></span>
+          </div>
+
+          <!-- E-Mail -->
+          <div class="form-group">
+            <label for="email">
+              E-Mail <span class="required" aria-hidden="true">*</span>
+              <span class="tooltip" data-tooltip="Firmen-E-Mail-Adresse"
+                >ⓘ</span
+              >
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="vorname.nachname@firma.de"
+              required
+              aria-required="true"
+              aria-describedby="email-error"
+              data-error-required="E-Mail ist erforderlich"
+              data-error-typemismatch="Ungültige E-Mail-Adresse"
+            />
+            <span
+              class="field-error"
+              id="email-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Telefon -->
+          <div class="form-group">
+            <label for="phone">
+              Telefon <span class="required" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="+49 123 456789"
+              required
+              pattern="^[\d\s\+\-\(\)\/]+$"
+              aria-required="true"
+              aria-describedby="phone-error"
+              data-error-required="Telefon ist erforderlich"
+              data-error-pattern="Ungültiges Telefon-Format (nur Zahlen, +, -, (), /, Leerzeichen)"
+            />
+            <span
+              class="field-error"
+              id="phone-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Abteilung -->
+          <div class="form-group">
+            <label for="abteilung">
+              Abteilung <span class="required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="abteilung"
+              name="abteilung"
+              required
+              aria-required="true"
+              aria-describedby="abteilung-error"
+              data-error-required="Bitte Abteilung wählen"
+            >
+              <option value="">-- Abteilung wählen --</option>
+            </select>
+            <span
+              class="field-error"
+              id="abteilung-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Position -->
+          <div class="form-group">
+            <label for="position">
+              Position <span class="required" aria-hidden="true">*</span>
+            </label>
+            <select
+              id="position"
+              name="position"
+              required
+              disabled
+              aria-required="true"
+              aria-describedby="position-error"
+              data-error-required="Bitte Position wählen"
+            >
+              <option value="">-- Zuerst Abteilung wählen --</option>
+            </select>
+            <span
+              class="field-error"
+              id="position-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Bemerkung -->
+          <div class="form-group">
+            <label for="bemerkung">Bemerkung (optional)</label>
+            <input
+              type="text"
+              id="bemerkung"
+              name="bemerkung"
+              placeholder="Zusätzliche Informationen"
+              maxlength="200"
+            />
+          </div>
+
+          <!-- Gehalt -->
+          <div class="form-group">
+            <label for="gehalt">
+              Gehalt <span class="required" aria-hidden="true">*</span>
+              <span
+                class="tooltip"
+                data-tooltip="Bruttogehalt pro Monat in Euro"
+                >ⓘ</span
+              >
+            </label>
+            <input
+              type="text"
+              id="gehalt"
+              name="gehalt"
+              placeholder="z.B. 5000€ pro Monat Brutto"
+              required
+              aria-required="true"
+              aria-describedby="gehalt-error"
+              data-error-required="Gehalt ist erforderlich"
+            />
+            <span
+              class="field-error"
+              id="gehalt-error"
+              aria-live="polite"
+            ></span>
+          </div>
+
+          <!-- Profilbild -->
+          <div class="form-group">
+            <label for="bild">
+              Profilbild (optional)
+              <span
+                class="tooltip"
+                data-tooltip="JPEG, PNG oder WebP (max. 5MB)"
+                >ⓘ</span
+              >
+            </label>
+            <input
+              type="file"
+              id="bild"
+              name="bild"
+              accept="image/jpeg,image/png,image/webp"
+            />
+          </div>
+
+          <!-- Formular-Buttons -->
+          <div class="button-group">
+            <button type="submit">💾 Speichern</button>
+            <button type="button" id="abbrechen">❌ Abbrechen</button>
+          </div>
+        </form>
+
+        <!-- ==========================================
+             EMPTY STATES
+             ========================================== -->
+
+        <!-- Empty State: Keine Mitarbeiter gefunden -->
+        <div
+          id="emptyState"
+          class="empty-state"
+          style="display: none"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="empty-state-icon" aria-hidden="true">🔍</div>
+          <h3 class="empty-state-title">Keine Mitarbeiter gefunden</h3>
+          <p class="empty-state-text">
+            Es wurden keine Mitarbeiter gefunden, die Ihren Filterkriterien
+            entsprechen.
+          </p>
+          <button
+            class="btn btn-secondary"
+            onclick="document.getElementById('filterReset').click()"
+          >
+            Filter zurücksetzen
+          </button>
+        </div>
+
+        <!-- Empty State: Willkommen -->
+        <div
+          id="welcomeState"
+          class="empty-state"
+          style="display: none"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="empty-state-icon" aria-hidden="true">🎉</div>
+          <h3 class="empty-state-title">Willkommen bei PeopleDB!</h3>
+          <p class="empty-state-text">
+            Beginnen Sie mit dem Hinzufügen Ihres ersten Mitarbeiters.
+          </p>
+          <button
+            class="btn btn-primary"
+            onclick="document.getElementById('neuMitarbeiter').click()"
+          >
+            Ersten Mitarbeiter hinzufügen
+          </button>
+        </div>
+
+        <!-- Empty State: Keine Suchergebnisse -->
+        <div
+          id="noSearchResults"
+          class="empty-state"
+          style="display: none"
+          role="status"
+          aria-live="polite"
+        >
+          <div class="empty-state-icon" aria-hidden="true">🔍</div>
+          <h3 class="empty-state-title">Keine Suchergebnisse</h3>
+          <p class="empty-state-text">
+            Für "<span id="searchTerm"></span>" wurden keine Mitarbeiter
+            gefunden.
+          </p>
+          <button
+            class="btn btn-secondary"
+            onclick="
+              document.getElementById('suche').value = '';
+              document
+                .getElementById('suche')
+                .dispatchEvent(new Event('input'));
+            "
+          >
+            Suche löschen
+          </button>
+        </div>
+
+        <!-- ==========================================
+             MITARBEITER-TABELLE
+             ========================================== -->
+        <table id="mitarbeiterTabelle" class="mitarbeiter-table">
+          <thead>
+            <tr>
+              <th scope="col">Bild</th>
+
+              <!-- Sortierbare Spalten -->
+              <th scope="col" class="sortable" data-sort="vorname">
+                Vorname <span class="sort-icon" aria-hidden="true"></span>
+              </th>
+
+              <th scope="col" class="sortable" data-sort="name">
+                Name <span class="sort-icon" aria-hidden="true"></span>
+              </th>
+
+              <th scope="col">E-Mail</th>
+              <th scope="col">Telefon</th>
+
+              <th scope="col" class="sortable" data-sort="abteilung">
+                Abteilung <span class="sort-icon" aria-hidden="true"></span>
+              </th>
+
+              <th scope="col" class="sortable" data-sort="position">
+                Position <span class="sort-icon" aria-hidden="true"></span>
+              </th>
+
+              <th scope="col">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="tabelleBody"></tbody>
+        </table>
+
+        <!-- ==========================================
+             PAGINIERUNG
+             ========================================== -->
+        <nav class="pagination" role="navigation" aria-label="Seitennavigation">
+          <button id="prevPage" class="page-btn" aria-label="Vorherige Seite">
+            ← Zurück
+          </button>
+          <span id="pageInfo" aria-live="polite">Seite 1 von 1</span>
+          <button id="nextPage" class="page-btn" aria-label="Nächste Seite">
+            Weiter →
+          </button>
+        </nav>
+      </main>
+
+      <!-- ==========================================
+           MODAL DIALOG
+           ========================================== -->
+      <div
+        id="detailModal"
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <div class="modal-content">
+          <span class="close" aria-label="Modal schließen">&times;</span>
+          <div id="detailContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script defer laden -->
+    <script src="script_local.js" defer></script>
+  </body>
+</html>
