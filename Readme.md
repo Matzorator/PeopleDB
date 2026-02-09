@@ -7,8 +7,8 @@
 
 > **Eine moderne, vollständig clientseitige Mitarbeiterverwaltung mit LocalStorage-Persistenz, Bild-Upload und responsivem Design. Gebaut mit Vanilla JavaScript - keine Frameworks, keine Dependencies.**
 
-[![🚀 Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-success?style=for-the-badge)](https://IHR-USERNAME.github.io/peopledb/)
-[![📥 Download](https://img.shields.io/badge/Download-ZIP-blue?style=for-the-badge)](https://github.com/IHR-USERNAME/peopledb/archive/refs/heads/main.zip)
+[![🚀 Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-success?style=for-the-badge)](https://Matzorator.github.io/peopledb/)
+[![📥 Download](https://img.shields.io/badge/Download-ZIP-blue?style=for-the-badge)](https://github.com/Matzorator/peopledb/archive/refs/heads/main.zip)
 
 ---
 
@@ -44,7 +44,7 @@ python -m http.server 8000
 
 **Das war's!** Die App lädt automatisch 60 Beispiel-Mitarbeiter. 🎉
 
-**Oder direkt ausprobieren:** [Live Demo auf GitHub Pages](https://IHR-USERNAME.github.io/peopledb/)
+**Oder direkt ausprobieren:** [Live Demo auf GitHub Pages](https://Matzorator.github.io/peopledb/)
 
 ---
 
